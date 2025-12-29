@@ -2,7 +2,7 @@ import * as THREE from "https://esm.sh/three@0.156.1";
 import { OrbitControls } from "https://esm.sh/three@0.156.1/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://esm.sh/three@0.156.1/examples/jsm/loaders/GLTFLoader";
 import gsap from "https://esm.sh/gsap";
-import { Reflector } from "https://esm.sh/three@0.156.1/examples/jsm/objects/Reflector";
+import { Reflector } from "https://esm.sh/three@0.156.1/examples/jsm/objects/Reflector"
 
 document.addEventListener("DOMContentLoaded", () => new App());
 
@@ -16,7 +16,7 @@ class App {
 
   loadAssets() {
     const loaderModel = new GLTFLoader();
-    loaderModel.load(this.gltfFile, gltf => {
+    loaderModel.load(this.gltfFile, (gltf) => {
       this.model = gltf.scene;
       this.setUpScene();
     });
@@ -29,11 +29,11 @@ class App {
     this.fog = new THREE.Fog(this.bgrColor, 13, 20);
     this.scene.fog = this.fog;
     this.camera = new THREE.PerspectiveCamera(
-    60,
-    this.winWidth / this.winHeight,
-    1,
-    100);
-
+      60,
+      this.winWidth / this.winHeight,
+      1,
+      100
+    );
     this.camera.position.set(0, 4, 8);
     this.camera.lookAt(new THREE.Vector3());
     this.scene.add(this.camera);
@@ -57,7 +57,7 @@ class App {
     this.clock = new THREE.Clock();
     this.time = 0;
     this.deltaTime = 0;
-
+    
     // Core
     this.createRenderer();
     this.createSim();
@@ -103,21 +103,21 @@ class App {
     this.carrot.material = this.bonusMat;
     this.carrotLeaf.material = this.primMat;
     this.carrotLeaf2.material = this.primMat;
-
+    
     this.addOutline(this.rabbitBody);
     this.addOutline(this.earRight);
     this.addOutline(this.earLeft);
     this.addOutline(this.tail);
     this.addOutline(this.carrot);
 
-    this.rabbit.traverse(object => {
+    this.rabbit.traverse((object) => {
       if (object.isMesh) {
         object.castShadow = true;
         object.receiveShadow = true;
       }
     });
 
-    this.carrot.traverse(object => {
+    this.carrot.traverse((object) => {
       if (object.isMesh) {
         object.castShadow = true;
       }
@@ -128,21 +128,21 @@ class App {
   }
 
   createFloor() {
-
+        
     this.floor = new Reflector(
     new THREE.PlaneGeometry(this.floorSize, this.floorSize),
-    {
-      color: new THREE.Color(this.bgrColor),
-      textureWidth: 1024,
-      textureHeight: 1024 });
-
-
+      {
+          color: new THREE.Color(this.bgrColor),
+          textureWidth: 1024,
+          textureHeight: 1024
+      }
+    ) 
     this.floor.rotation.x = -Math.PI / 2;
     this.floor.receiveShadow = true;
     this.modifyFloorShader();
-
+    
     this.scene.add(this.floor);
-  }
+   }
 
   createLine() {
     const material = new THREE.LineDashedMaterial({
@@ -150,8 +150,8 @@ class App {
       linewidth: 1,
       scale: 1,
       dashSize: 0.2,
-      gapSize: 0.1 });
-
+      gapSize: 0.1
+    });
 
     const points = [];
     points.push(new THREE.Vector3(0, 0.2, 0));
@@ -160,30 +160,30 @@ class App {
     this.line = new THREE.Line(geometry, material);
     this.scene.add(this.line);
   }
+  
+  createParticles(){
+        let bodyCount = 20;
+        let tailCount =5;
+        let particleGeom = new THREE.BoxGeometry(.2,.2,.2,1,1,1);
+        this.particles1 = [];
+        this.particles2 = [];
 
-  createParticles() {
-    let bodyCount = 20;
-    let tailCount = 5;
-    let particleGeom = new THREE.BoxGeometry(.2, .2, .2, 1, 1, 1);
-    this.particles1 = [];
-    this.particles2 = [];
+        let i = 0;
 
-    let i = 0;
-
-    for (i = 0; i < bodyCount; i++) {
-      let m = new THREE.Mesh(particleGeom, this.bonusMat);
-      this.particles1.push(m);
-      m.scale.set(0, 0, 0);
-      this.scene.add(m);
+        for ( i=0; i< bodyCount; i++){
+            let m = new THREE.Mesh(particleGeom, this.bonusMat);
+            this.particles1.push(m)
+            m.scale.set(0,0,0);
+            this.scene.add(m);
+        }
+        
+        for ( i=0; i< tailCount; i++){
+            let m = new THREE.Mesh(particleGeom, this.primMat);
+            this.particles2.push(m)
+            m.scale.set(0,0,0);
+            this.scene.add(m);
+        }
     }
-
-    for (i = 0; i < tailCount; i++) {
-      let m = new THREE.Mesh(particleGeom, this.primMat);
-      this.particles2.push(m);
-      m.scale.set(0, 0, 0);
-      this.scene.add(m);
-    }
-  }
 
   createLight() {
     this.ambientLight = new THREE.AmbientLight(0xffffff);
@@ -213,11 +213,11 @@ class App {
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
-      preserveDrawingBuffer: true });
+      preserveDrawingBuffer: true
+    });
+    this.renderer.setClearColor(new THREE.Color(this.bgrColor))
 
-    this.renderer.setClearColor(new THREE.Color(this.bgrColor));
-
-    this.renderer.setPixelRatio(this.pixelRatio = window.devicePixelRatio);
+    this.renderer.setPixelRatio((this.pixelRatio = window.devicePixelRatio));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = THREE.LinearToneMapping;
     this.renderer.toneMappingExposure = 1;
@@ -225,53 +225,53 @@ class App {
     this.renderer.shadowMap.type = THREE.VSMShadowMap;
     this.renderer.localClippingEnabled = true;
   }
-
-  createSim() {
+  
+  createSim(){
     const fragmentShader = document.getElementById('simulationFragmentShader').textContent;
     const vertexShader = document.getElementById('simulationVertexShader').textContent;
-
+    
     this.floorSimMat = new THREE.ShaderMaterial({
       uniforms: {
-        inputTexture: { type: "t", value: null },
+        inputTexture: {type: "t", value: null},
         time: { value: 0.0 },
-        blade1PosOld: { value: new THREE.Vector2(.5, .5) },
-        blade1PosNew: { value: new THREE.Vector2(.5, .5) },
-        strength: { value: 0.0 } },
-
+        blade1PosOld: {value: new THREE.Vector2(.5,.5)},
+        blade1PosNew: {value: new THREE.Vector2(.5,.5)},
+        strength: {value: 0.0},
+      },
       vertexShader,
-      fragmentShader });
-
-    this.bufferSim = new BufferSim(this.renderer, 1024, 1024, this.floorSimMat);
+      fragmentShader,
+    })
+		this.bufferSim = new BufferSim(this.renderer, 1024, 1024, this.floorSimMat)
   }
-
-  createMaterials() {
+  
+  createMaterials(){
     // Materials
     this.primMat = new THREE.MeshToonMaterial({ color: 0x7beeff });
     this.secMat = new THREE.MeshToonMaterial({ color: this.bgrColor });
     this.bonusMat = new THREE.MeshToonMaterial({ color: 0xff3434 });
-
+    
     // outline Material
     const fragmentShader = document.getElementById('outlineFragmentShader').textContent;
     const vertexShader = document.getElementById('outlineVertexShader').textContent;
     this.outlineMat = new THREE.ShaderMaterial({
-      uniforms: {
+      uniforms : {
         color: { value: new THREE.Color(0x000000) },
-        size: { type: "f", value: .02 } },
-
+        size: {type:"f", value:.02},
+      },
       vertexShader,
       fragmentShader,
-      side: THREE.BackSide });
-
+      side:THREE.BackSide,
+    })
   }
-
-  addOutline(origin) {
+  
+  addOutline(origin){
     let outline = origin.clone();
     outline.children = [];
     outline.position.set(0, 0, 0);
-    outline.rotation.x = 0;
-    outline.rotation.y = 0;
-    outline.rotation.z = 0;
-    outline.scale.set(1, 1, 1);
+    outline.rotation.x=0;
+    outline.rotation.y=0;
+    outline.rotation.z=0;
+    outline.scale.set(1,1,1);
     outline.material = this.outlineMat;
     origin.add(outline);
     return outline;
@@ -328,14 +328,14 @@ class App {
       let targetRot = -angle + Math.PI / 2;
 
       if (this.heroDistance > 0.3)
-      this.rabbit.rotation.y += this.getShortestAngle(targetRot - this.rabbit.rotation.y) * 3 * this.dt;
-      this.heroAngularSpeed = this.getShortestAngle(this.rabbit.rotation.y - this.heroOldRot);
+        this.rabbit.rotation.y += this.getShortestAngle(targetRot - this.rabbit.rotation.y) * 3 * this.dt;
+      this.heroAngularSpeed = this.getShortestAngle( this.rabbit.rotation.y - this.heroOldRot);
 
       this.heroOldRot = this.rabbit.rotation.y;
-      if (!this.isJumping) {
+      if (!this.isJumping){
         this.earLeft.rotation.x = this.earRight.rotation.x = -this.heroSpeed.length() * 2;
       }
-
+        
       let p = this.line.geometry.attributes.position.array;
       p[0] = this.targetHeroAbsMousePos.x;
       p[2] = this.targetHeroAbsMousePos.y;
@@ -345,18 +345,18 @@ class App {
 
       this.line.geometry.attributes.position.needsUpdate = true;
       this.line.computeLineDistances();
-
+      
       this.heroNewUVPos = new THREE.Vector2(
-      0.5 + this.rabbit.position.x / this.floorSize,
-      0.5 - this.rabbit.position.z / this.floorSize);
-
-
+        0.5 + this.rabbit.position.x / this.floorSize,
+        0.5 - this.rabbit.position.z / this.floorSize
+      );
+      
       this.floorSimMat.time += this.dt;
       this.floorSimMat.uniforms.blade1PosNew.value = this.heroNewUVPos;
       this.floorSimMat.uniforms.blade1PosOld.value = this.heroOldUVPos;
-      this.floorSimMat.uniforms.strength.value = this.isJumping ?
-      0 :
-      1 / (1 + this.heroSpeed.length() * 10);
+      this.floorSimMat.uniforms.strength.value = this.isJumping
+        ? 0
+        : 1 / (1 + this.heroSpeed.length() * 10);
       this.bufferSim.render();
       this.renderer.setRenderTarget(null);
 
@@ -377,89 +377,89 @@ class App {
     this.renderer.setSize(this.winWidth, this.winHeight);
   }
 
-  onMouseMove(event) {
+  onMouseMove(event) { 
     const x = event.clientX / this.winWidth * 2 - 1;
     const y = -(event.clientY / this.winHeight * 2 - 1);
-    this.updateMouse(x, y);
+    this.updateMouse(x,y)
   }
-
-  onTouchMove(event) {
+  
+  onTouchMove(event) { 
     if (event.touches.length == 1) {
       event.preventDefault();
       const x = event.touches[0].pageX / this.winWidth * 2 - 1;
       const y = -(event.touches[0].pageY / this.winHeight * 2 - 1);
-      this.updateMouse(x, y);
+      this.updateMouse(x,y)
     }
   }
-
-  updateMouse(x, y) {
+  
+  updateMouse(x,y){
     this.mouse.x = x;
     this.mouse.y = y;
-    if (this.floor) this.raycast();
+    if (this.floor) this.raycast(); 
   }
-
-  onMouseDown() {
+  
+  onMouseDown(){
     if (this.rabbit && !this.isJumping) this.jump();
   }
-
+  
   jump() {
     this.isJumping = true;
     let turns = Math.floor(this.heroSpeed.length() * 5) + 1;
     let jumpDuration = .5 + turns * .2;
-    let targetRot = this.heroAngularSpeed > 0 ? Math.PI * 2 * turns : -Math.PI * 2 * turns;
-
+    let targetRot = (this.heroAngularSpeed>0)? Math.PI*2*turns : -Math.PI*2*turns
+        
     gsap.to(this.rabbitBody.rotation, {
-      duration: jumpDuration,
+      duration: jumpDuration, 
       ease: "linear.none",
-      y: targetRot,
-      onComplete: () => {
+      y: targetRot, 
+      onComplete: ()=>{
         this.rabbitBody.rotation.y = 0;
-      } });
-
+      }
+    });
 
     gsap.to([this.earLeft.rotation, this.earRight.rotation], {
-      duration: jumpDuration * .8,
+      duration: jumpDuration * .8, 
       ease: "power4.out",
-      x: Math.PI / 4 });
-
+      x: Math.PI/4, 
+    });
     gsap.to([this.earLeft.rotation, this.earRight.rotation], {
-      duration: jumpDuration * .2,
-      delay: jumpDuration * .8,
+      duration: jumpDuration * .2, 
+      delay: jumpDuration * .8, 
       ease: "power4.in",
-      x: 0 });
-
+      x: 0, 
+    });
 
     gsap.to(this.jumpParams, {
       duration: jumpDuration * .5,
-      ease: "power2.out",
-      jumpProgress: .5,
+      ease : "power2.out",
+      jumpProgress:.5, 
       onUpdate: () => {
-        let sin = Math.sin(this.jumpParams.jumpProgress * Math.PI);
+        let sin = Math.sin( this.jumpParams.jumpProgress * Math.PI) ;
         this.rabbit.position.y = Math.pow(sin, 4) * turns;
-      } });
-
+      }
+    });
     gsap.to(this.jumpParams, {
       duration: jumpDuration * .5,
-      ease: "power2.in",
-      delay: jumpDuration * .5,
-      jumpProgress: 1,
+      ease : "power2.in",
+      delay : jumpDuration * .5,
+      jumpProgress:1, 
       onUpdate: () => {
-        let sin = Math.sin(this.jumpParams.jumpProgress * Math.PI);
+        let sin = Math.sin( this.jumpParams.jumpProgress * Math.PI) ;
         this.rabbit.position.y = Math.pow(sin, 1) * turns;
       },
       onComplete: () => {
         this.rabbit.position.y = 0;
         this.jumpParams.jumpProgress = 0;
         this.isJumping = false;
-      } });
-
+      }
+    });      
   }
-
+  
   raycast() {
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    var intersects = this.raycaster.intersectObjects([this.floor]);
+    this.raycaster.setFromCamera( this.mouse, this.camera );
+    var intersects = this.raycaster.intersectObjects( [this.floor] );
 
-    if (intersects.length > 0) {
+    if (intersects.length>0){
       this.targetHeroUVPos.x = intersects[0].uv.x;
       this.targetHeroUVPos.y = intersects[0].uv.y;
     }
@@ -467,86 +467,86 @@ class App {
 
   getShortestAngle(v) {
     let a = v % (Math.PI * 2);
-    if (a < -Math.PI) a += Math.PI * 2;else
-    if (a > Math.PI) a -= Math.PI * 2;
+    if (a < -Math.PI) a += Math.PI * 2;
+    else if (a > Math.PI) a -= Math.PI * 2;
     return a;
   }
 
   constrain(v, vMin, vMax) {
     return Math.min(vMax, Math.max(vMin, v));
   }
-
-  testCollision() {
+  
+  testCollision(){
     if (this.isExploding) return;
     let distVec = this.rabbit.position.clone();
     distVec.sub(this.carrot.position);
     let l = distVec.length();
-    if (l <= 1) {
+    if (l <= 1){
       this.carrot.visible = false;
       this.explode(this.carrot.position);
     }
   }
-
-  explode(pos) {
+  
+  explode(pos){
     this.isExploding = true;
     let p1Count = this.particles1.length;
     let p2Count = this.particles2.length;
     let i = 0;
-    for (i = 0; i < p1Count; i++) {
+    for ( i=0; i< p1Count; i++){
       let m = this.particles1[i];
       m.position.x = pos.x;
       m.position.y = pos.y;
       m.position.z = pos.z;
-      m.scale.set(2, 2, 2);
+      m.scale.set(2,2,2);
 
       gsap.to(m.position, {
         x: pos.x + (-.5 + Math.random()) * 1.5,
         y: pos.y + (.5 + Math.random()) * 1.5,
         z: pos.z + (-.5 + Math.random()) * 1.5,
-        duration: 1,
-        ease: "power4.out" });
-
-      gsap.to(m.scale, {
-        x: 0,
-        y: 0,
-        z: 0,
-        duration: 1,
+        duration : 1,
         ease: "power4.out",
-        onComplete: () => {
+      })
+      gsap.to(m.scale, {
+        x:0,
+        y:0,
+        z:0,
+        duration : 1,
+        ease: "power4.out",
+        onComplete: ()=>{
           this.spawnCarrot();
           this.isExploding = false;
-        } });
-
+        }
+      })    
     }
-    for (i = 0; i < p2Count; i++) {
+    for ( i=0; i< p2Count; i++){
       let m = this.particles2[i];
       m.position.x = pos.x;
       m.position.y = pos.y;
       m.position.z = pos.z;
-      m.scale.set(2, 2, 2);
+      m.scale.set(2,2,2);
 
       gsap.to(m.position, {
         x: pos.x + (-.5 + Math.random()) * 1.5,
         y: pos.y + (.5 + Math.random()) * 1.5,
         z: pos.z + (-.5 + Math.random()) * 1.5,
-        duration: 1,
-        ease: "power4.out" });
-
-      gsap.to(m.scale, {
-        x: 0,
-        y: 0,
-        z: 0,
-        duration: 1,
+        duration : 1,
         ease: "power4.out",
-        onComplete: () => {
+      })
+      gsap.to(m.scale, {
+        x:0,
+        y:0,
+        z:0,
+        duration : 1,
+        ease: "power4.out",
+        onComplete: ()=>{
           this.spawnCarrot();
           this.isExploding = false;
-        } });
-
+        }
+      })    
     }
   }
-
-  spawnCarrot() {
+  
+  spawnCarrot(){
 
     let px = (Math.random() - .5) * .3;
     let py = (Math.random() - .5) * .3;
@@ -555,92 +555,93 @@ class App {
     this.carrot.position.z = py * this.floorSize;
     this.carrot.position.y = -1;
 
-    this.carrot.scale.set(0, 0, 0);
+    this.carrot.scale.set(0,0,0);
     this.carrot.visible = true;
 
-
+  
     gsap.to(this.carrot.scale, {
-      duration: 1.5,
+      duration:1.5,
       ease: "elastic.out",
-      x: 1,
-      y: 1,
-      z: 1 });
-
+      x:1,
+      y:1,
+      z:1,
+    })
     gsap.to(this.carrot.position, {
-      duration: 1.5,
+      duration:1.5,
       ease: "elastic.out",
-      y: h });
-
+      y:h,
+    })
   }
-
-  modifyFloorShader() {
-
+  
+  modifyFloorShader(){
+    
     // the floor is currently a Reflector which reacts as a mirror
     // in order to make it a bit more interesting (adding blur, displacement and shadows)
     // we will supercharge its shaders with custom code.
-
+    
     // get the renderTarget and texture Matrix from the unaltered reflector
     let renderTarget = this.floor.getRenderTarget();
     const textureMatrix = this.floor.material.uniforms.textureMatrix;
-
+    
     // get the custom shaders
     const fragmentShader = document.getElementById('reflectorFragmentShader').textContent;
     const vertexShader = document.getElementById('reflectorVertexShader').textContent;
-
+    
     // merge the uniforms of the reflector with additional shadow and light uniforms
     const uniforms = THREE.UniformsUtils.merge([
-    THREE.UniformsLib['common'],
-    THREE.UniformsLib['shadowmap'],
-    THREE.UniformsLib['lights'],
-    this.floor.material.uniforms,
-    {
-      tScratches: { value: this.bufferSim.output.texture } }]);
-
-
-
+		  THREE.UniformsLib['common'],
+      THREE.UniformsLib['shadowmap'],
+		  THREE.UniformsLib['lights'],
+      this.floor.material.uniforms,
+      {
+        tScratches : { value: this.bufferSim.output.texture },
+	    }
+	  ])
+  
     // apply to the reflector
-    this.floor.material.lights = true;
-    this.floor.material.uniforms = uniforms;
+		this.floor.material.lights = true;
+		this.floor.material.uniforms = uniforms;
     this.floor.material.uniforms.tDiffuse.value = renderTarget.texture;
     this.floor.material.uniforms.textureMatrix.value = textureMatrix.value;
     this.floor.material.vertexShader = vertexShader;
     this.floor.material.fragmentShader = fragmentShader;
-  }}
-
-
-class BufferSim {
-  constructor(renderer, width, height, shader) {
-
-    this.renderer = renderer;
-    this.shader = shader;
-    this.orthoScene = new THREE.Scene();
-    var fbo = new THREE.WebGLRenderTarget(width, height, {
-      wrapS: THREE.ClampToEdgeWrapping,
-      wrapT: THREE.ClampToEdgeWrapping,
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-      format: THREE.RGBAFormat,
-      type: THREE.FloatType,
-      stencilBuffer: false,
-      depthBuffer: false });
-
-
-    fbo.texture.generateMipmaps = false;
-
-    this.fbos = [fbo, fbo.clone()];
-    this.current = 0;
-    this.output = this.fbos[0];
-    this.orthoCamera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, .00001, 1000);
-    this.orthoQuad = new THREE.Mesh(new THREE.PlaneGeometry(width, height), this.shader);
-    this.orthoScene.add(this.orthoQuad);
   }
+}
 
-  render() {
-    this.shader.uniforms.inputTexture.value = this.fbos[this.current].texture;
-    this.input = this.fbos[this.current];
-    this.current = 1 - this.current;
-    this.output = this.fbos[this.current];
-    this.renderer.setRenderTarget(this.output);
-    this.renderer.render(this.orthoScene, this.orthoCamera);
-    this.renderer.setRenderTarget(null);
-  }}
+class BufferSim{
+    constructor ( renderer, width, height, shader ) {
+
+        this.renderer = renderer;
+        this.shader = shader;
+        this.orthoScene = new THREE.Scene();
+        var fbo = new THREE.WebGLRenderTarget( width, height, {
+            wrapS: THREE.ClampToEdgeWrapping,
+            wrapT: THREE.ClampToEdgeWrapping,
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.LinearFilter,
+            format: THREE.RGBAFormat,
+            type: THREE.FloatType,
+            stencilBuffer: false,
+            depthBuffer: false
+        });
+
+        fbo.texture.generateMipmaps = false;
+        
+        this.fbos = [ fbo, fbo.clone() ];
+        this.current = 0;
+        this.output = this.fbos[ 0 ];
+        this.orthoCamera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, .00001, 1000 );
+        this.orthoQuad = new THREE.Mesh( new THREE.PlaneGeometry( width, height ), this.shader );
+        this.orthoScene.add( this.orthoQuad );
+    }
+
+    render(){
+        this.shader.uniforms.inputTexture.value = this.fbos[ this.current ].texture;
+        this.input = this.fbos[ this.current ];
+        this.current = 1 - this.current;
+        this.output = this.fbos[ this.current ];
+        this.renderer.setRenderTarget(this.output);
+        this.renderer.render( this.orthoScene, this.orthoCamera );
+        this.renderer.setRenderTarget(null);
+    }
+}
